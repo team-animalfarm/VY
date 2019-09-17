@@ -7,7 +7,7 @@
     "test": "npm test",
     "start": "nodemon server/server.js",
     "build": "NODE_ENV=production webpack",
-    "dev": "NODE_ENV=development nodemon server/server.js & webpack-dev-server --mode development --hot",
+    "dev": "NODE_ENV=development nodemon server/server.js & webpack-dev-server --mode development --hot"
   },
   "repository": {
     "type": "git",
