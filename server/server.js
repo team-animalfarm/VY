@@ -3,6 +3,11 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
+const placesController = require('./placesController.js');
+const userController = require('./userController.js');
+
+
+
 const app = express();
 
 const PORT = process.env.PORT || 3000;
@@ -17,8 +22,32 @@ app.use(cookieParser());
 // to serve static files
 app.use(express.static('assets'));
 
-// serve index.html for get request to root route
-app.get('/', (req, res) => res.status(200).sendFile(path.resolve(__dirname, '../client/index.html')));
+// Serve index.html for get request to root route.
+app.get('/', (req, res) => {
+  res.status(200).sendFile(path.resolve(__dirname, '../client/index.html'))
+});
+
+// Create a user.
+app.post('/createUser', userController.createUser, (res, req) => {
+  res.status(200);
+});
+
+// Verify User.
+app.post('/verifyUser', userController.verifyUser, (res, req) => {
+  res.status(200);
+});
+
+// Search for places.
+app.get('/search', placesController.searchPlaces, (req, res) => {
+  // Send back the results.
+  res.status(200).send(res.locals.results);
+})
+
+// Create places.
+app.post('/createPlace', placesController.createPlace, (req, res) => {
+  // Send back the results.
+  res.status(200);
+})
 
 // unhandled routes/404 response
 app.use('*', (req, res, next) => {
@@ -31,4 +60,5 @@ app.use((err, req, res, next) => {
     res.status(500).send('There was an error!/Something broke!');
 });
 
+// I'm listening...
 app.listen(PORT, () => console.log(`App listening on PORT ${PORT}`));
