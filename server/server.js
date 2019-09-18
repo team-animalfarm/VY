@@ -3,8 +3,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-const placesController = require('./placesController.js');
-const userController = require('./userController.js');
+const placesController = require('./places/placesController.js');
+const userController = require('./user/userController.js');
 
 
 
@@ -38,7 +38,7 @@ app.post('/verifyUser', userController.verifyUser, (res, req) => {
 });
 
 // Search for places.
-app.get('/search', placesController.searchPlaces, (req, res) => {
+app.get('/search', placesController.geocodeSearch, placesController.searchPlaces, (req, res) => {
   // Send back the results.
   res.status(200).send(res.locals.results);
 })
