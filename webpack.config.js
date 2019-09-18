@@ -1,57 +1,66 @@
 const path = require('path');
-// const HtmlWebpackPlugin = require('html-webpack-plugin')
+const express = require('express');
 
 module.exports = {
-    entry: {
-       app: './client/index.js',
-    },
+    mode: process.env.NODE_ENV,
+    entry: './client/index.js',
     output: {
         path: path.resolve(__dirname, 'build'),
+        publicPath: '/build/',
         filename: 'bundle.js'
     },
-    mode: process.env.NODE_ENV,
     module: {
         rules: [
-            // jsx files
             {
-                test: /\.jsx$/,
+                test: /\.jsx?/,
                 exclude: /node_modules/,
-                use: ['babel-loader'],
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: [
+                            '@babel/preset-env',
+                            '@babel/preset-react'
+                        ]
+                    }
+                }
             },
-            // CSS
             {
-                test: /\.css$/,
-                use: ['style-loader', 'css-loader'],
-            },
-            //SASS
-            {
-                test: /\.sass$/,
-                use: ['style-loader', 'sass-loader']
-            },
-            // config for images
-            {
-                test: /\.(png|jp(e*)g|svg)$/,
-                use: [{
-                    loader: 'url-loader'
+                test: /\.s?css$/,
+                use: [
+                    {
+                        loader: 'style-loader'
+                    },
+                    {
+                        loader: 'css-loader', 
+                        options: {
+                            url: true,
+                            sourceMap: false
+                        }
+                    },
+                    {
+                        loader: 'sass-loader'
                     }
                 ]
             },
-            // Typescript config
             {
-                test: /\.ts$/,
-                use: 'ts-loader '
+                test: /\.(png|jp(e*)g|svg)$/,  
+            use: [{
+                loader: 'url-loader',
+                options: { 
+                    limit: 8000, // Convert images < 8kb to base64 strings
+                    name: 'images/[hash]-[name].[ext]'
+                } 
+            }] 
             }
         ]
     },
     devServer: {
         publicPath: '/build',
+
         proxy: {
-            '/*': 'http://localhost:3000'
-        },
-        hot: true,
-        host: 'localhost'
-    },
-    // plugins
-    plugins: [],
-    watch: true
+            '/images/**': 'http://localhost:3000/images',
+            '/**': 'http://localhost:3000',
+        }
+
+    }
 }
