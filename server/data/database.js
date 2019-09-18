@@ -22,7 +22,7 @@ pool
     .then(() => client.query(`CREATE TABLE IF NOT EXISTS reviews (
       id SERIAL PRIMARY KEY NOT NULL,
       user_id INTEGER REFERENCES users(id),
-      restaurant_id INTEGER REFERENCES restaurant(id) 
+      restaurant_id INTEGER REFERENCES restaurants(id) 
     )`))
     .then(() => client.release())
     .catch((e) => {
