@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Tburrington/VY#readme",
   "dependencies": {
+    "@elastic/elasticsearch": "^7.3.0",
     "@material-ui/core": "^4.3.0",
     "@material-ui/icons": "^4.2.1",
     "awesome-typescript-loader": "^5.2.1",
