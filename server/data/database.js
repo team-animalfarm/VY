@@ -17,7 +17,9 @@ pool
     .then(() => client.query(`CREATE TABLE IF NOT EXISTS restaurants (
       id SERIAL PRIMARY KEY NOT NULL,
       name VARCHAR (50) NOT NULL,
-      address VARCHAR (100) NOT NULL
+      address VARCHAR (100) NOT NULL,
+      lat DECIMAL NOT NULL,
+      long DECIMAL NOT NULL
     )`))
     .then(() => client.query(`CREATE TABLE IF NOT EXISTS reviews (
       id SERIAL PRIMARY KEY NOT NULL,
