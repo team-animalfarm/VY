@@ -1,6 +1,7 @@
 const { Pool } = require('pg');
-​
-// const uri = '';
+
+
+const uri = 'postgres://wqzhtkbp:XhWKc2CEUNwTJ1uuSOrRe9rPLzqmkwFm@salt.db.elephantsql.com:5432/wqzhtkbp';
 ​
 const pool = new Pool({ connectionString: uri });
 ​
@@ -32,3 +33,5 @@ pool
       console.log(e.stack);
     }))
   .catch(e => console.log(e.stack));
+
+  module.exports = pool;
