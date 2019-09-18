@@ -1,7 +1,15 @@
+
+
 * {
     box-sizing: border-box;
+    
 }
 
+body {
+    // background: url('../../build/images/c8acc68c1918e76d34e4812b9c2132fc-plant-based-two.jpg') no-repeat;
+    // background-size: cover;
+    background-color: white;
+}
 
 .headline {
     display: flex;
@@ -41,4 +49,8 @@
     grid-gap: 50px;
     grid-template-rows: 1fr;
     margin-bottom: 35px;
+}
+
+.cards {
+    box-shadow: 0 1px 3px 2px rgba(72,72,72,.4);
 }
