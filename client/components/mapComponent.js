@@ -13,7 +13,7 @@ const MapboxGLMap = () => {
   const [map, setMap] = useState(null);
   const mapContainer = useRef(null);
   const value = useContext(AppContext);
-  console.log(value);
+  // console.log(value);
 
 
   useEffect(() => {
