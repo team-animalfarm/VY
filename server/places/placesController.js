@@ -11,6 +11,8 @@ const placesController = {};
  * @param next - express method
  */
 placesController.geocodeSearch = (req, res, next) => {
+
+  console.log('here', req.params.searchString );
   // Here's our search query for Elasticsearch.
   const query = {
     'query': {
@@ -55,7 +57,7 @@ placesController.geocodeSearch = (req, res, next) => {
 placesController.searchPlaces = (req, res, next) => {
   // Grab parsed creds.
   const query = {
-    text: 'SELECT * FROM restaurants',
+    text: 'SELECT * FROM places',
     values: ''
   };
 
@@ -71,11 +73,11 @@ placesController.searchPlaces = (req, res, next) => {
         // Augment the results with haversine distance.
         const augResults = results.rows.map(result => {
           result['reviews'] = ['this is a test review'];
-          result['coordinates'] = [result.lon, result.lat];
+          result['coordinates'] = [result.long, result.lat];
           result['distance'] = dataprocessing.haversineDistance(
-            [inputLat, inputLon], [result.lat, result.lon], isMiles = true
+            [inputLat, inputLon], [result.lat, result.long], isMiles = true
           );
-          delete result.lon;
+          delete result.long;
           delete result.lat;
           return result;
         })
