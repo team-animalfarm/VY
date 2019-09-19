@@ -38,9 +38,44 @@ app.post('/verifyUser', userController.verifyUser, (res, req) => {
 });
 
 // Search for places.
-app.get('/search', placesController.geocodeSearch, placesController.searchPlaces, (req, res) => {
+app.get('/search/:location', /*placesController.geocodeSearch, placesController.searchPlaces, */ (req, res) => {
   // Send back the results.
-  res.status(200).send(res.locals.results);
+  const hardCodedResponse = {
+    "geoLocatedCoordinates": [-118.470620, 33.987851],
+    "closestPlaces": [
+      {
+        "name": "The Vegan Joint",
+        "address": "10438 National Blvd, Los Angeles, California, USA, 90034",
+        "coordinates": [-118.411554, 34.028756],
+        "reviews": [
+          {
+            "text": "this place rocks!!"
+          }
+        ]
+      },
+      {
+        "name": "AVO Cafe",
+        "address": "306 Pico Blvd, Santa Monica, California, USA, 90405",
+        "coordinates": [-118.487825,  34.009238],
+        "reviews": [
+          {
+            "text": "this place sucks!!"
+          }
+        ]
+      },
+      {
+        "name": "SunCafe",
+        "address": "10820 Ventura Blvd, Studio City, California, USA, 91604",
+        "coordinates": [-118.366538, 34.138632],
+        "reviews": [
+          {
+            "text": "ew!!"
+          }
+        ]
+      }
+    ]
+  }
+  res.status(200).send(hardCodedResponse);
 })
 
 // Create places.

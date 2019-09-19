@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useContext } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { AppContext } from "../context";
 
 const styles = {
   width: "100vw",
@@ -11,20 +12,60 @@ const styles = {
 const MapboxGLMap = () => {
   const [map, setMap] = useState(null);
   const mapContainer = useRef(null);
+  const value = useContext(AppContext);
 
   useEffect(() => {
-    mapboxgl.accessToken = "pk.eyJ1IjoiY2l0cnVzdmFuaWxsYSIsImEiOiJjanVuNDRvdTYxOXpyNGVzNjh3NzZhaDc3In0.cK4TvqJbaPdUJyfMcPdjpQ";
+    mapboxgl.accessToken = "pk.eyJ1IjoidGJ1cnJpbmd0b24iLCJhIjoiY2swcGxmcHE1MDZxaDNicWx3MWN1YzQ1OSJ9.isVnLz4AfpqjoxSSgj5Jww";
     const initializeMap = ({ setMap, mapContainer }) => {
       const map = new mapboxgl.Map({
         container: mapContainer.current,
-        style: "mapbox://styles/citrusvanilla/cjyqq8ne009e31crpwz6chbmt", // stylesheet location
-        center: [0, 0],
-        zoom: 5
+        style: "mapbox://styles/tburrington/ck0pm912b0r561cucb1wpo5n6", // stylesheet location
+        center: [-118.4695, 33.9850],
+        zoom: 10
       });
 
       map.on("load", () => {
         setMap(map);
         map.resize();
+
+        map.addLayer({
+          "id": "points",
+          "type": "symbol",
+          "source": {
+            "type": "geojson",
+            "data": {
+              "type": "FeatureCollection",
+              "features": [{
+              "type": "Feature",
+              "geometry": {
+              "type": "Point",
+              "coordinates": [-77.03238901390978, 38.913188059745586]
+          },
+          "properties": {
+          "title": "Mapbox DC",
+          "icon": "monument"
+          }
+          }, {
+          "type": "Feature",
+          "geometry": {
+          "type": "Point",
+          "coordinates": [-122.414, 37.776]
+          },
+          "properties": {
+          "title": "Mapbox SF",
+          "icon": "harbor"
+          }
+          }]
+          }
+          },
+          "layout": {
+          "icon-image": "{icon}-15",
+          "text-field": "{title}",
+          "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+          "text-offset": [0, 0.6],
+          "text-anchor": "top"
+          }
+          });
       });
     };
 

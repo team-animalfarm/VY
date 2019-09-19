@@ -1,21 +1,19 @@
 import React, {useState} from 'react';
 import Card from './Card'
+import { AppContext } from '../context';
 
 
 
 
-const CardGrid = () => {
+const CardGrid = (props) => {
     // const [restaurantsData] = useState(aboutUsData)
 
     const membersArray = []
-
-    for (let i = 0; i < 4; i++) {
-      membersArray.push(
-        <Card
-          key={i}
-        />
-      )
-    }
+ 
+    for (let i = 0; i < 6; i++) {
+      membersArray.push( <Card key={i}/>)
+     }
+   
   
 
     return (
