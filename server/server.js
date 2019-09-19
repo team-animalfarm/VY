@@ -38,9 +38,12 @@ app.post('/verifyUser', userController.verifyUser, (res, req) => {
 });
 
 // Search for places.
-app.get('/search', placesController.geocodeSearch, placesController.searchPlaces, (req, res) => {
+app.get('/search/:searchString', placesController.geocodeSearch, placesController.searchPlaces, (req, res) => {
   // Send back the results.
-  res.status(200).send(res.locals.results);
+  res.status(200).send({
+    closestPlaces: res.locals.closestPlaces,
+    geoLocatedCoordinates: res.locals.geoLocatedCoordinates
+  });
 });
 
 // Create places.

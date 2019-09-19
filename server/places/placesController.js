@@ -1,12 +1,8 @@
 const pool = require('../models/database');
 const esClient = require('../models/elasticsearch');
-
-
+const dataprocessing = require('../data/dataprocessing');
 
 const placesController = {};
-
-
-
 
 /**
  * geocodeSearch - Get coordinates from a provided search string.
@@ -15,37 +11,37 @@ const placesController = {};
  * @param next - express method
  */
 placesController.geocodeSearch = (req, res, next) => {
-
-  console.log(req.body.searchString);
-
+  // Here's our search query for Elasticsearch.
   const query = {
     'query': {
       'bool': {
         'must': [
-          { 'match': { 'STR_NM': 'castle heights' } }
+          { 'match': { 'STR_NM': req.params.searchString } }
         ],
         'should': [
-          { 'match': { 'HSE_ID': '2822' } } 
+          { 'match': { 'HSE_ID': '' } } 
         ]
       }
     }
   }
 
-  // ElasticSearch get coordinates.
-  esClient.search(
-    { index: 'la', body: query },
-    (err, result) => {
-      if (err) {
-        console.log('error');
-        next(err);
-      }
-      else {
-        console.log('result!');
-        console.log(result['body']['hits']);
-        next();
-      }
+  // Perform the search.
+  esClient.search({ index: 'la', body: query }, (err, result) => {
+    if (err) {
+      console.log(err);
+      next(err);
     }
-  )
+    else {
+      // Extract coordiates from top result.
+      const topResultLat = Number(result['body']['hits']['hits'][0]['_source']['LAT']);
+      const topResultLon = Number(result['body']['hits']['hits'][0]['_source']['LON']);
+      console.log("Result Found: ", [topResultLon, topResultLat]);
+      
+      // Stick it on res.locals.
+      res.locals.geoLocatedCoordinates = [topResultLon, topResultLat];
+      next();
+    }
+  });
 
 }
 
@@ -59,8 +55,8 @@ placesController.geocodeSearch = (req, res, next) => {
 placesController.searchPlaces = (req, res, next) => {
   // Grab parsed creds.
   const query = {
-    text: 'SELECT * FROM users WHERE username = $1',
-    values: req.body.searchString,
+    text: 'SELECT * FROM restaurants',
+    values: ''
   };
 
   // first check if both fields are filled, then try to create user
@@ -69,14 +65,33 @@ placesController.searchPlaces = (req, res, next) => {
     client.query(query.text, query.values, (err, results) => {
       if (err) return next(err);
       else {
-        res.locals.results = results.rows;
-        console.log(res.locals.results);
+        // Sort results by distance.
+        const [inputLon, inputLat] = res.locals.geoLocatedCoordinates;
+
+        // Augment the results with haversine distance.
+        const augResults = results.rows.map(result => {
+          result['reviews'] = ['this is a test review'];
+          result['coordinates'] = [result.lon, result.lat];
+          result['distance'] = dataprocessing.haversineDistance(
+            [inputLat, inputLon], [result.lat, result.lon], isMiles = true
+          );
+          delete result.lon;
+          delete result.lat;
+          return result;
+        })
+
+        // Sort the results by distance.
+        const sortedResults = augResults.sort((a,b) => a.distance - b.distance);
+
+        // Stick the results on closestPlaces.
+        res.locals.closestPlaces = sortedResults;
+
+        // Invoke next.
         next();
       }
     });
   });
 };
-
 
 
 /**
@@ -105,7 +120,6 @@ placesController.createPlace = (req, res, next) => {
     });
   });
 };
-
 
 
 module.exports = placesController;
