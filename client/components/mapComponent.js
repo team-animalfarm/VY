@@ -15,6 +15,15 @@ const MapboxGLMap = () => {
   const value = useContext(AppContext);
   // console.log(value);
 
+  // Use effect to fly around
+  useEffect(() => {
+    if (value.geoLocatedCoordinates) {
+      map.flyTo({
+        center: value.geoLocatedCoordinates,
+        zoom: 14
+      });
+    }
+  }, [value])
 
   useEffect(() => {
     mapboxgl.accessToken = "pk.eyJ1IjoidGJ1cnJpbmd0b24iLCJhIjoiY2swcGxmcHE1MDZxaDNicWx3MWN1YzQ1OSJ9.isVnLz4AfpqjoxSSgj5Jww";
