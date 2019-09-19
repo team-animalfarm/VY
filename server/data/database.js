@@ -13,7 +13,7 @@ pool
       username VARCHAR (20) NOT NULL,
       password VARCHAR (20) NOT NULL
     )`)
-    .then(() => client.query(`CREATE TABLE IF NOT EXISTS restaurants (
+    .then(() => client.query(`CREATE TABLE IF NOT EXISTS places (
       id SERIAL PRIMARY KEY NOT NULL,
       rating INTEGER NOT NULL,
       phone VARCHAR (20) NOT NULL,
