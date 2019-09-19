@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef, useLayoutEffect} from 'react';
 import MapboxGLMap from './components/mapComponent';
 import './styles/styles.scss';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,35 +24,33 @@ const App = () => {
     const [inputValue, updateValue] = useState(null);
     const [isModalOpen, setModalOpen] = useState(false);
     
-
+ 
     const handleEvent = (e) => {
       
+        console.log(e.target.value)
         updateValue(e.target.value)
-       
+       console.log(inputValue);
     }
 
-    const handleClick = ()=> {
-      setModalOpen(isModalOpen ? false: true);
-    }
+  
 
-   
 
-    useEffect(()=> {
-        const fetchData = async () => {
+    const fetchData = () => {
       
        
-       fetch(`/search/${inputValue}`)
-        .then(response => response.json())
-        .then(data => {
-            updateCards(data);
-        })
-   
-      
-   
-       
-    }
-    fetchData();
-}, [inputValue]);
+      fetch(`/search/${inputValue}`)
+       .then(response => response.json())
+       .then(data => {
+          console.log(data);
+           updateCards(data);
+       })
+      }
+
+       const handleClick = (e)=> {
+         e.preventDefault();
+        setModalOpen(isModalOpen ? false: true);
+        fetchData();
+      }
 
 
     return(
@@ -63,8 +61,8 @@ const App = () => {
         <h1 className="main-heading">PLANTfare</h1>
         </div>
         <div className="right-column">
-            <form onSubmit={handleEvent}>
-        <input className="search" onSubmit={handleEvent}/>
+            <form onSubmit={handleClick}>
+        <input className="search" onChange={handleEvent}/>
         </form>
         <div>
      
