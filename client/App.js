@@ -34,8 +34,14 @@ const App = () => {
        
     }
 
+    const handleClick = ()=> {
+      setModalOpen(isModalOpen ? false: true);
+    }
+
+   
+
     useEffect(()=> {
-        const fetchData = () => {
+        const fetchData = async () => {
         // let restaurantsObj = {};
        
        fetch(`/search/${inputValue}`)
@@ -43,15 +49,15 @@ const App = () => {
         .then(data => {
             updateCards(data);
         })
-       console.log(cards) 
+      //  console.log(cards) 
       
-       return cards;
+   
        
     }
     fetchData();
 }, [inputValue]);
 
-   
+  console.log(cards); 
     return(
         <div>
         <div className="headline">
@@ -65,7 +71,7 @@ const App = () => {
         </form>
         <div>
      
-     <Button onClick={()=> setModalOpen(isModalOpen ? false: true)} variant="contained" id="primary" className={classes.button}>
+     <Button onClick={handleClick} variant="contained" id="primary" className={classes.button}>
        Search
      </Button>
      <input
@@ -84,7 +90,7 @@ const App = () => {
         </AppContext.Provider>
         </div>
         <div className="cardGrid">
-            <AppContext.Provider value={{data: cards}}>
+            <AppContext.Provider value={{...cards}}>
         {isModalOpen ? <CardGrid /> : null}
         </AppContext.Provider>
         </div>
