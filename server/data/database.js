@@ -2,17 +2,15 @@ const { Pool } = require('pg');
 
 
 const uri = 'postgres://wqzhtkbp:XhWKc2CEUNwTJ1uuSOrRe9rPLzqmkwFm@salt.db.elephantsql.com:5432/wqzhtkbp';
-​
+
 const pool = new Pool({ connectionString: uri });
-​
+
 pool
   .connect()
-  .then(client => client
+  .then((client) => client
     .query(`CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY NOT NULL,
-      first_name VARCHAR (20) NOT NULL,
-      last_name VARCHAR (20) NOT NULL,
-      email VARCHAR (40) NOT NULL,
+      username VARCHAR (20) NOT NULL,
       password VARCHAR (20) NOT NULL
     )`)
     .then(() => client.query(`CREATE TABLE IF NOT EXISTS restaurants (

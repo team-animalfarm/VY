@@ -1,4 +1,7 @@
-const pool = require('../models/database');
+const bcrypt = require('bcryptjs');
+const db = require('../data/database');
+
+const SALT_WORK_FACTOR = 10;
 
 const userController = {};
 
@@ -8,52 +11,43 @@ const userController = {};
 * @param req - http.IncomingRequest
 * @param res - http.ServerResponse
 */
-userController.createUser = (req, res, next) => {
+userController.createUser = async (req, res, next) => {
   // Grab parsed creds.
-  const username = req.body.username;
-  const password = req.body.password;
+  const { username, password } = req.body;
 
   // first check if both fields are filled, then try to create user
   if (username && password) {
-    // insert the username/body variables (from incoming req.body object)
-    // into our mongoose(database) model, 'User' using mongoose create method
-    // User.create({ username, password }, (err, data) => {
-    //   if (err) {
-    //     //render error message on signup screen
-    //     res.render('./../client/signup', { error: err.errmsg })
-    //   } else {
-    //     //pass along user id that mongoose creates
-    //     res.locals.ssid = data['_id'];
-    //     return next();
-    //   }
 
-    // })
+    const salt = bcrypt.genSaltSync(SALT_WORK_FACTOR);
+    const hashedPass = bcrypt.hashSync(password, salt);
+
     const query = {
-      text: 'INSERT INTO users(username, password) VALUES($1, $2)',
-      values: [username, password],
+      text: 'INSERT INTO users(username, password) VALUES($1, $2) RETURNING *',
+      values: [username, hashedPass],
     }
 
-    pool.connect((err, client, done)=> {
-      if (err) throw err;
-      client.query(query.text, query.values, (err, res) => {
-        if(err) {
-          console.log(err.stack);
-          return next(err);
-        }
-        else {
-          console.log('success.');
-          next();
-        }
+    try {
+      const result = await db.query(query);
+      // if no records returned, throw an error
+      if (result.rows.length === 0) {
+        return next({ 
+          error: 'Database error creating user',
+        });
+      }
+      res.locals.userId = result.rows[0].id;
+      res.locals.user = result.rows[0];
+    } catch (error) {
+      return next({
+        error: 'Database error while creating user',
       });
-    });
-
-
+    }
+    // missing info
   } else {
-    // if either field was not entered correctly, redirect to signup
-    //res.render('./../client/signup', { error: 'error: bad request' });
-    console.log('bad input');
-    next({ error: 'bad input' });
+    return next({ 
+      error: 'bad input',
+    });
   }
+  return next();
 };
 
 /**
@@ -64,52 +58,53 @@ userController.createUser = (req, res, next) => {
 * @param req - http.IncomingRequest
 * @param res - http.ServerResponse
 */
-userController.verifyUser = (req, res, next) => {
+userController.verifyUser = async (req, res, next) => {
   // Grab parsed creds.
-  const username = req.body.username;
-  const password = req.body.password;
+  const { username, password } = req.body;
+  // verify that both a username and a password were submitted
+  if (username && password) {
+    // user will be found using the username, then will be verified
+    // after they enter the correct password before we give ok
+    const query = {
+      text: 'SELECT id, password FROM users WHERE username = $1',
+      values: [username],
+    };
 
-  // User.findOne({ username }, (err, data) => {
-  //   if (err) res.locals.err = err;
-
-  //   // data is what is returned from User.findOne
-  //   if (data) {
-  //     const hashedpw = data._doc.password;
-  //     //use bcrypt to see if passed in pw is the same as hashedpw
-  //     bcrypt.compare(password, hashedpw, function (err, result) {
-  //       if (result) {
-  //         res.locals.ssid = data._id;
-  //         return next();
-  //       } else {
-  //         res.redirect('/signup')
-  //       }
-  //     })
-
-  //   } else {
-  //     // if no user found, redirect to signup
-  //     res.redirect('/signup');
-  //   }
-
-
-  //   // return next();
-  // })
-  const query = {
-    text: 'SELECT * FROM users WHERE username = $1',
-    values: username,
-  }
-
-  pool.connect((err, client, done)=> {
-    if (err) next(err);
-    client.query(query.text, query.values, (err, res) => {
-      if (err) return console.log(err.stack);
-      else {
-        console.log(res.rows[0]);
-        next();
+    try {
+      const result = await db.query(query);
+      // no user found
+      if (result.rows.length === 0) {
+        return next({ 
+          error: 'incorrect username',
+        });
       }
+      // otherwise, hash the password and compare to record in DB
+      const hashedPw = result.rows[0].password;
+        
+      bcrypt.compare(password, hashedPw, (err, data) => {
+        // correct password
+        if (data) {
+          res.locals.user = result.rows[0];
+          res.locals.userId = result.rows[0].id;
+          console.log(`setting userId to ${res.locals.userId}`);
+        } else {
+          return next({
+            error: 'Incorrect password',
+          });
+        }
+        return next();
+      });
+    } catch (err) {
+      return next({ 
+        error: 'Database unknown error verifying user',
+      });
+    }
+  } else {
+    return next({
+      error: 'Missing credentials',
     });
-  });
-
-}
+  }
+};
 
 
 module.exports = userController;
