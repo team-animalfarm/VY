@@ -13,6 +13,8 @@ const MapboxGLMap = () => {
   const [map, setMap] = useState(null);
   const mapContainer = useRef(null);
   const value = useContext(AppContext);
+  console.log(value);
+
 
   useEffect(() => {
     mapboxgl.accessToken = "pk.eyJ1IjoidGJ1cnJpbmd0b24iLCJhIjoiY2swcGxmcHE1MDZxaDNicWx3MWN1YzQ1OSJ9.isVnLz4AfpqjoxSSgj5Jww";

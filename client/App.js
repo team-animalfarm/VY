@@ -26,10 +26,7 @@ const App = () => {
     
 
     const handleEvent = (e) => {
-        // fetch('/search', {
-        //     // method: 'POST', 
-        //     // body: JSON.stringify({searchString: `${e.target.value}`})
-        //   })
+      
         updateValue(e.target.value)
        
     }
@@ -42,14 +39,14 @@ const App = () => {
 
     useEffect(()=> {
         const fetchData = async () => {
-        // let restaurantsObj = {};
+      
        
        fetch(`/search/${inputValue}`)
         .then(response => response.json())
         .then(data => {
             updateCards(data);
         })
-      //  console.log(cards) 
+   
       
    
        
@@ -57,7 +54,7 @@ const App = () => {
     fetchData();
 }, [inputValue]);
 
-  console.log(cards); 
+
     return(
         <div>
         <div className="headline">
