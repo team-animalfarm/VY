@@ -15,14 +15,70 @@ const MapboxGLMap = () => {
   const value = useContext(AppContext);
   // console.log(value);
 
-  // Use effect to fly around
+  // Use effect to fly around and add points to the map.
   useEffect(() => {
+    // If result...
     if (value.geoLocatedCoordinates) {
-      map.flyTo({
-        center: value.geoLocatedCoordinates,
-        zoom: 14
+      // Fly to geoLocatedCoordinates.
+      map.flyTo({ center: value.geoLocatedCoordinates, zoom: 14 });
+
+      // Add geoLocatedCoordinate to the map.
+      map.removeLayer('points');
+      map.removeSource('points');
+      map.addLayer({
+        "id": "points",
+        "type": "symbol",
+        "layout": {
+          "icon-image": "{icon}",
+          "text-field": "{title}",
+          "text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+          "text-offset": [0, 0.6],
+          "text-anchor": "top"
+        },
+        "paint": {
+          "text-color": "#eee"
+        },
+        "source": {
+          "type": "geojson",
+          "data": {
+            "type": "FeatureCollection",
+            "features": [
+              {
+                "type": "Feature",
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": value.geoLocatedCoordinates
+                },
+                "properties": {
+                  "title": "Your location",
+                  "icon": "marker-stroked-15",
+                  "marker-size": 'large',
+                  'marker-color': '#3CB371',
+                }
+              },
+              ...value.closestPlaces.map(place => {
+                return {
+                  "type": "Feature",
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": place.coordinates
+                  },
+                  "properties": {
+                    "title": place.name,
+                    "icon": "garden-15",
+                    "marker-size": 'large',
+                    'marker-color': '#3bb2d0',
+                  }
+                }
+              })
+            ]
+          }
+        }
+
       });
-    }
+
+    };
+
   }, [value])
 
   useEffect(() => {
