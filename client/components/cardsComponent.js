@@ -16,8 +16,8 @@ const CardGrid = (props) => {
 
     const membersArray = [];
     for(let i = 0; i < value.closestPlaces.length; i++){
-        membersArray.push(<Card name={value.closestPlaces[i].name} address={value.closestPlaces[i].address} 
-            reviews={value.closestPlaces[i].reviews} key={i}/>)
+        membersArray.push(<Card name={value.closestPlaces[i].name} address={value.closestPlaces[i].location} 
+            reviews={value.closestPlaces[i].reviews} rating={value.closestPlaces[i].rating} key={i} img={value.closestPlaces[i].img_src} phone={value.closestPlaces[i].phone}/>)
     }
 
     return (

@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css?family=Handlee|Open+Sans&display=swap');
 
+$primary-color: #492598;
+$secondary-color: lighten($primary-color, 30%);
 * {
     box-sizing: border-box;
     
@@ -118,6 +120,31 @@ button:focus {
 
 .no-render {
     padding-left: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#card-img {
+    max-width: 80%;
+    margin-bottom: 20px;
+   border-radius: 10px;
+}
+
+.reviews-heading {
+    font-size: 20px;
+}
+
+.card-heading {
+    color: $secondary-color
+}
+
+.star-icon {
+    color: #dfab93;
+}
+
+.reviews {
+    margin-left: 20px;
 }
 
 .info-link {
