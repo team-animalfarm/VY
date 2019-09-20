@@ -4,6 +4,27 @@ const dataprocessing = require('../data/dataprocessing');
 
 const placesController = {};
 
+
+const sampleUsers = [
+  'Simon M.',
+  'Taylor B.',
+  'Justin F.',
+  'Jay D.'
+]
+
+const sampleReviews = [
+  'The food is great here. A+!',
+  'servers are nice, nice ambiance...',
+  'try the vegan nachos!!!!!',
+  'legit best veg burger IN LAAAA!!!!',
+  'This PLACE was CLOSED on my BIRTHDAY :(',
+  'what more can i say VEGAN COWS',
+  'garbage.  go back to new york.',
+  'came here on a codesmith trip and all we did was code.',
+  'my friend made this website haha he works for google now',
+  'vegans FTWWWW.'
+]
+
 /**
  * geocodeSearch - Get coordinates from a provided search string.
  * @param req - http.IncomingRequest
@@ -72,7 +93,12 @@ placesController.searchPlaces = (req, res, next) => {
 
         // Augment the results with haversine distance.
         const augResults = results.rows.map(result => {
-          result['reviews'] = ['this is a test review'];
+          let numComments = Math.floor(Math.random()*3) + 1;
+          result['reviews'] = new Array(numComments).fill(0).map(el => [
+            sampleUsers[Math.floor(Math.random()*sampleUsers.length)],
+            sampleReviews[Math.floor(Math.random()*sampleReviews.length)]
+          ]);
+          // result['reviews'] = ['this is a test review'];
           result['coordinates'] = [result.long, result.lat];
           result['distance'] = dataprocessing.haversineDistance(
             [inputLat, inputLon], [result.lat, result.long], isMiles = true
