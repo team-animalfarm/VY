@@ -2,10 +2,22 @@ import React, {useState, useContext, useEffect} from 'react';
 import Card from './Card'
 import { AppContext } from '../context';
 
+interface cards {
+    name: string;
+    address: string;
+    coordinates: Array<number>
+    reviews: Array<string>
+  }
+
+interface value {
+    closestPlaces: Array<cards>;
+    geoLocatedCoordinates: Array<number>;
+}
+
 
 const CardGrid = (props) => {
    
-    const value = useContext(AppContext);
+    const value : value = useContext(AppContext);
 
     if (!value.closestPlaces) {
         return (

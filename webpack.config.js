@@ -2,6 +2,7 @@ const path = require('path');
 
 
 module.exports = {
+    target: 'web',
     mode: process.env.NODE_ENV,
     entry: './client/index.tsx',
     devtool: 'inline-source-map',
@@ -15,8 +16,8 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
-                loader: 'ts-loader',
+                test: /\.tsx?/,
+                loader: 'babel-loader',
                 exclude: /node_modules/
             },
             {
@@ -64,7 +65,8 @@ module.exports = {
     },
     devServer: {
         publicPath: '/build',
-
+        contentBase: './',
+        port: 5000,
         proxy: {
             '/images/**': 'http://localhost:3000/images',
             '/**': 'http://localhost:3000',
