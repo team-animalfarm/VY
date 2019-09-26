@@ -2,6 +2,7 @@
 
 $primary-color: #492598;
 $secondary-color: lighten($primary-color, 30%);
+$tertiary-color: lighten($secondary-color, 20%);
 * {
     box-sizing: border-box;
     
@@ -131,8 +132,13 @@ button:focus {
    border-radius: 10px;
 }
 
+.list-element {
+    list-style-type: none;
+}
+
 .reviews-heading {
     font-size: 20px;
+    color: $secondary-color
 }
 
 .card-heading {
@@ -143,8 +149,25 @@ button:focus {
     color: #dfab93;
 }
 
+.left-column {
+    display: flex;
+}
+
+.eco-icon {
+   color: #3CB371;
+   margin-top: 20px;
+   margin-left: -10px;
+   -webkit-animation: rotating 2s linear infinite;
+   -moz-animation: rotating 2s linear infinite;
+   -ms-animation: rotating 2s linear infinite;
+   -o-animation: rotating 2s linear infinite;
+   animation: rotating 2s linear infinite;
+}
+
 .reviews {
-    margin-left: 20px;
+    margin-top: -20px;
+    border: 2px solid $tertiary-color;
+    padding: 10px;
 }
 
 .info-link {
@@ -152,8 +175,9 @@ button:focus {
     border: 1px solid transparent;
     display: flex;
     width: 100%;
-    min-width: 100%;
+    text-decoration: none;
     height: auto;
+    list-style-type: none;
     flex-direction: column;
     border-radius: 5px;
     padding: 10px;
@@ -168,6 +192,36 @@ button:focus {
       justify-content: space-between;
       padding: 0;
   }
+
+  @-webkit-keyframes rotating /* Safari and Chrome */ {
+    from {
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes rotating {
+    from {
+      -ms-transform: rotate(0deg);
+      -moz-transform: rotate(0deg);
+      -webkit-transform: rotate(0deg);
+      -o-transform: rotate(0deg);
+      transform: rotate(0deg);
+    }
+    to {
+      -ms-transform: rotate(360deg);
+      -moz-transform: rotate(360deg);
+      -webkit-transform: rotate(360deg);
+      -o-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
+
 
 @-webkit-keyframes fadeIn {
     0%   { opacity: 0; }
